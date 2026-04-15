@@ -1,64 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SwapProject</title>
     <style>
+        :root {
+            --bg: #08111f;
+            --bg-soft: #0d1a2d;
+            --card: rgba(15, 23, 42, 0.72);
+            --card-strong: rgba(15, 23, 42, 0.9);
+            --stroke: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --blue: #38bdf8;
+            --cyan: #22d3ee;
+            --violet: #818cf8;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            --radius-xl: 28px;
+            --radius-lg: 22px;
+            --radius-md: 18px;
+            --container: 1180px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0f172a;
-            color: white;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+                radial-gradient(circle at 85% 10%, rgba(129, 140, 248, 0.18), transparent 24%),
+                radial-gradient(circle at 50% 100%, rgba(34, 211, 238, 0.12), transparent 30%),
+                linear-gradient(180deg, #07101d 0%, #08111f 40%, #0a1323 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            top: -160px;
+            left: -120px;
+            background: rgba(56, 189, 248, 0.3);
+        }
+
+        body::after {
+            right: -140px;
+            bottom: -180px;
+            background: rgba(129, 140, 248, 0.22);
+        }
+
+        .wrap {
+            width: min(var(--container), calc(100% - 40px));
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.28));
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 30px rgba(0,0,0,0.25);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-text {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 40px;
+            gap: 2px;
         }
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+        .brand-text strong {
+            font-size: 16px;
+            font-weight: 700;
         }
 
-        p {
-            color: #94a3b8;
-            margin-bottom: 40px;
+        .brand-text span {
+            font-size: 13px;
+            color: var(--muted);
         }
 
-        .game {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            width: 300px;
+        .nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .game h2 {
-            margin: 0 0 10px 0;
-        }
-
-        a {
-            color: #38bdf8;
+        .nav a {
+            color: var(--muted);
             text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 999px;
+            transition: 0.25s ease;
+        }
+
+        .nav a:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 28px;
+            align-items: stretch;
+            padding: 34px 0 26px;
+        }
+
+        .hero-card,
+        .panel,
+        .game-card,
+        .about-card,
+        .footer-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius-xl);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card {
+            padding: 42px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -100px -120px auto;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(56,189,248,0.24), transparent 65%);
+            filter: blur(20px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            color: #dbeafe;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 0.96;
+            letter-spacing: -0.05em;
+            max-width: 720px;
+        }
+
+        .hero p {
+            margin: 20px 0 0;
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 650px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 0 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            color: #04111d;
+            background: linear-gradient(135deg, #67e8f9, #60a5fa);
+            box-shadow: 0 14px 35px rgba(56, 189, 248, 0.28);
+        }
+
+        .button-secondary {
+            color: var(--text);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .panel {
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            justify-content: space-between;
+        }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            color: var(--muted);
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #cffafe;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.16);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 30px;
+            letter-spacing: -0.04em;
+            margin-bottom: 6px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .mini-note {
+            padding: 18px;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        section {
+            padding: 26px 0;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 42px);
+            letter-spacing: -0.04em;
+        }
+
+        .section-head p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 560px;
+            line-height: 1.7;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .game-card {
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -30px -40px auto;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 65%);
+            pointer-events: none;
+        }
+
+        .game-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .icon {
+            width: 66px;
+            height: 66px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+
+        .icon.crystal {
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        }
+
+        .icon.wordout {
+            background: linear-gradient(135deg, #06b6d4, #2563eb);
+        }
+
+        .badge {
+            padding: 9px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #dbeafe;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            white-space: nowrap;
+        }
+
+        .game-card h3 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: -0.03em;
+        }
+
+        .game-card p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 15px;
+            max-width: 95%;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            padding: 9px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            background: rgba(255,255,255,0.045);
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #dbe7f3;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .store-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .store-link:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+
+        .ghost-link {
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 4px;
+            font-weight: 600;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .about-card {
+            padding: 24px;
+        }
+
+        .about-card h4 {
+            margin: 16px 0 10px;
+            font-size: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .about-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 15px;
+        }
+
+        .about-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 22px;
+        }
+
+        .footer {
+            padding: 26px 0 40px;
+        }
+
+        .footer-card {
+            padding: 22px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .footer span {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.045);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        @media (max-width: 980px) {
+            .hero,
+            .games-grid,
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card,
+            .panel {
+                padding: 28px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+
+            .wrap {
+                width: min(var(--container), calc(100% - 24px));
+            }
+
+            .topbar {
+                padding: 18px 0;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .hero {
+                padding-top: 14px;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero p,
+            .section-head p {
+                font-size: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .section-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="wrap">
+        <header class="topbar">
+            <a class="brand" href="#top">
+                <div class="brand-mark">S</div>
+                <div class="brand-text">
+                    <strong>SwapProject</strong>
+                    <span>Premium mobile game studio</span>
+                </div>
+            </a>
 
-    <h1>SwapProject</h1>
-    <p>Mobile games developer</p>
+            <nav class="nav">
+                <a href="#games">Games</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </header>
 
-    <div class="game">
-        <h2>Crystal Rush</h2>
-        <p>Match-3 puzzle game with unique mechanics and bosses.</p>
-        <a href="https://apps.apple.com/ru/app/crystal-rush-%D1%82%D1%80%D0%B8-%D0%B2-%D1%80%D1%8F%D0%B4/id6761733530">View in App Store</a>
+        <main id="top">
+            <section class="hero">
+                <div class="hero-card">
+                    <div class="eyebrow">Independent iOS game developer</div>
+                    <h1>Beautiful mobile games with clean design and strong gameplay.</h1>
+                    <p>
+                        SwapProject is focused on polished App Store experiences — from stylish casual games to social word titles.
+                        Minimal presentation, premium feel, and attention to every visual detail.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#games">Explore Games</a>
+                        <a class="button button-secondary" href="#contact">Get in Touch</a>
+                    </div>
+                </div>
+
+                <aside class="panel">
+                    <div>
+                        <div class="panel-top">
+                            <div class="panel-title">Studio Overview</div>
+                            <div class="status">Live on App Store</div>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <strong>2</strong>
+                            <span>Published games</span>
+                        </div>
+                        <div class="stat">
+                            <strong>iOS</strong>
+                            <span>Native development</span>
+                        </div>
+                        <div class="stat">
+                            <strong>UIKit</strong>
+                            <span>Custom interfaces</span>
+                        </div>
+                        <div class="stat">
+                            <strong>SpriteKit</strong>
+                            <span>Game-first approach</span>
+                        </div>
+                    </div>
+
+                    <div class="mini-note">
+                        Each project is built with a strong focus on gameplay feel, visual quality, and a professional App Store presence.
+                    </div>
+                </aside>
+            </section>
+
+            <section id="games">
+                <div class="section-head">
+                    <div>
+                        <h2>Featured games</h2>
+                    </div>
+                    <p>
+                        A curated selection of published projects designed for mobile players who value simple mechanics, satisfying progression, and a refined visual style.
+                    </p>
+                </div>
+
+                <div class="games-grid">
+                    <article class="game-card">
+                        <div class="game-top">
+                            <div class="icon crystal">✦</div>
+                            <div class="badge">Match-3 / Boss Battles</div>
+                        </div>
+
+                        <h3>Crystal Rush</h3>
+                        <p>
+                            A polished match-3 puzzle game featuring bright crystal visuals, special mechanics, and boss encounters that add more tension and depth to classic gameplay.
+                        </p>
+
+                        <div class="tags">
+                            <div class="tag">Puzzle</div>
+                            <div class="tag">Boss mechanics</div>
+                            <div class="tag">Casual gameplay</div>
+                        </div>
+
+                        <div class="game-actions">
+                            <a class="store-link" href="https://apps.apple.com/ru/app/crystal-rush-%D1%82%D1%80%D0%B8-%D0%B2-%D1%80%D1%8F%D0%B4/id6761733530" target="_blank" rel="noopener noreferrer">View in App Store</a>
+                        </div>
+                    </article>
+
+                    <article class="game-card">
+                        <div class="game-top">
+                            <div class="icon wordout">W</div>
+                            <div class="badge">Party Game / Word Play</div>
+                        </div>
+
+                        <h3>WordOut</h3>
+                        <p>
+                            A fun and social word game created for friends and groups. Fast, accessible, and perfect for lively sessions with simple rules and strong replay value.
+                        </p>
+
+                        <div class="tags">
+                            <div class="tag">Party game</div>
+                            <div class="tag">Words</div>
+                            <div class="tag">Friends</div>
+                        </div>
+
+                        <div class="game-actions">
+                            <a class="store-link" href="https://apps.apple.com/ru/app/wordout-%D0%B8%D0%B3%D1%80%D0%B0-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B0%D0%BD%D0%B8%D0%B9/id6754257992" target="_blank" rel="noopener noreferrer">View in App Store</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="about">
+                <div class="section-head">
+                    <div>
+                        <h2>Why SwapProject</h2>
+                    </div>
+                    <p>
+                        The goal is to create games that look elegant, feel smooth, and are instantly understandable for players from the very first seconds.
+                    </p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="about-icon">✦</div>
+                        <h4>Premium presentation</h4>
+                        <p>
+                            Clean layouts, modern typography, dark polished visuals, and a studio identity that feels much more premium than a typical small developer page.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">⚡</div>
+                        <h4>Gameplay first</h4>
+                        <p>
+                            Every project is built around satisfying mechanics, visual clarity, and mobile-friendly pacing that works well in the App Store environment.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">⌘</div>
+                        <h4>Native development</h4>
+                        <p>
+                            Projects are developed natively for iOS with attention to performance, interface quality, animations, and long-term product growth.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer" id="contact">
+            <div class="footer-card">
+                <div>
+                    <strong>SwapProject</strong>
+                    <span>Independent mobile game development with focus on premium design and polished App Store releases.</span>
+                </div>
+
+                <div class="footer-links">
+                    <a href="#games">Games</a>
+                    <a href="#about">About</a>
+                </div>
+            </div>
+        </footer>
     </div>
-
-    <div class="game">
-        <h2>WordOut</h2>
-        <p>Fun party word game for friends.</p>
-        <a href="https://apps.apple.com/ru/app/wordout-%D0%B8%D0%B3%D1%80%D0%B0-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B0%D0%BD%D0%B8%D0%B9/id6754257992">View in App Store</a>
-    </div>
-
 </body>
 </html>
